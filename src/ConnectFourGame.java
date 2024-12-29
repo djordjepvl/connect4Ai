@@ -1,3 +1,5 @@
+import org.xml.sax.helpers.AttributesImpl;
+
 import java.util.Scanner;
 
 public class ConnectFourGame {
@@ -6,42 +8,62 @@ public class ConnectFourGame {
 
     public static void start(String initialBoard) {
         red = currentBoard.set(initialBoard);
-        red = !red;
         while (true) {
             currentBoard.print(red);
+
+            if (red) {
+                System.out.print("Red's move:");
+                if (!consolePlay()) continue;
+            }
+            else {
+                System.out.print("Yellow's move:");
+                if (!AIPlay()) continue;
+            }
+
+
             if (currentBoard.currentPlayerWon(red)) {
-                if (red) System.out.print("Red won!");
-                else System.out.print("Yellow won!");
+                currentBoard.print(red);
+                if (red) System.out.println("Red wins!");
+                else System.out.println("Yellow wins!");
+                break;
+            }
+            else if (currentBoard.boardFull()) {
+                currentBoard.print(red);
+                System.out.println("Draw!");
                 break;
             }
 
             red = !red;
             currentBoard.flip();
-
-            if (red) System.out.print("Red's move:");
-            else System.out.print("Yellow's move:");
-
-            consolePlay();
         }
     }
     public static void start() {
         start("");
     }
 
-    private static void consolePlay() {
+    private static boolean consolePlay() {
         try {
             int column = Integer.parseInt((new Scanner(System.in)).nextLine());
-            if (column<1 || column>7) throw new Exception();
-            playAt(column);
+            return playAt(column);
         }
-        catch (Exception e) {System.out.println("Invalid move!");}
+        catch (Exception e) {
+            System.out.println("Invalid move!");
+            return false;
+        }
     }
 
-    private static void playAt(int column) {
-        if (currentBoard.columnFull(column)) {
+    private static boolean AIPlay() {
+        int column = MinMax.calculateBestMove(currentBoard);
+        System.out.println(column);
+        return playAt(column);
+    }
+
+    private static boolean playAt(int column) {
+        if (currentBoard.columnFull(column) || column<1 || column>7) {
             System.out.println("Invalid move!");
-            return;
+            return false;
         }
         currentBoard.play(column, red);
+        return true;
     }
 }

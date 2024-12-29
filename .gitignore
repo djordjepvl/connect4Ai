@@ -28,4 +28,4 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-connect4.iml
+/connect4.iml

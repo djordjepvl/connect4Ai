@@ -10,7 +10,6 @@ public class Main {
                 "____yr_" +
                 "r___ryy"
                 ;
-
         ConnectFourGame.start();
     }
 }

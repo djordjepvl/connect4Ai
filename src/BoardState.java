@@ -1,6 +1,7 @@
 public class BoardState {
     private long board = 0;
     private long mask = 0;
+    int moves = 0;
 
     public void play(int column, boolean red) {
         int shift = (column-1)*7;
@@ -9,10 +10,15 @@ public class BoardState {
         board |= newTokenPos;
 
         if (newTokenPos >> shift+5 == 1) mask |= newTokenPos*2;
+
+        moves++;
     }
 
     public boolean columnFull(int column) {
         return ((mask >> (column-1)*7 )&0b1000000)==0b1000000;
+    }
+    public boolean boardFull() {
+        return mask > 0xFFFFFFFFFFFFL;
     }
 
     public boolean currentPlayerWon(boolean red) {
@@ -33,13 +39,13 @@ public class BoardState {
                 boolean boardAtPos = ((board >> pos)&1)==1;
                 boolean maskAtPos = ((mask >> pos)&1)==1;
                 if (red) {
-                    if (boardAtPos) System.out.print("r"); //red
-                    else if (maskAtPos) System.out.print("y"); //yellow
+                    if (boardAtPos) System.out.print("r");
+                    else if (maskAtPos) System.out.print("y");
                     else System.out.print("_");
                 }
                 else {
-                    if (boardAtPos) System.out.print("y"); //yellow
-                    else if (maskAtPos) System.out.print("r"); //red
+                    if (boardAtPos) System.out.print("y");
+                    else if (maskAtPos) System.out.print("r");
                     else System.out.print("_");
                 }
             }
@@ -48,10 +54,10 @@ public class BoardState {
     }
 
     public boolean set(String boardString) {
-        boolean red = true;
+        boolean red = false;
         board = 0;
         mask = 0;
-        if (boardString.length() !=42) return red;
+        if (boardString.length() !=42) return true;
 
         for (int i = 0; i < 42; i++) {
             char c = boardString.charAt(i);
@@ -60,16 +66,18 @@ public class BoardState {
             if (boardString.charAt(i) == 'r') {
                 board += val;
                 mask += val;
-                red = !red;
                 if (i<7) mask += val*2;
-                flip();
+                moves++;
             }
             else if (boardString.charAt(i) == 'y') {
                 mask += val;
-                red = !red;
                 if (i<7) mask += val*2;
-                flip();
+                moves++;
             }
+        }
+        if (moves%2==1) {
+            red = !red;
+            flip();
         }
         return red;
     }
