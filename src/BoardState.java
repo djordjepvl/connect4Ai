@@ -6,7 +6,7 @@ public class BoardState {
         int shift = (column-1)*7;
         long newTokenPos = ( ((mask >> shift) & 0b1111111) +1 ) << shift;
         mask |= newTokenPos;
-        if (red) board |= newTokenPos;
+        board |= newTokenPos;
 
         if (newTokenPos >> shift+5 == 1) mask |= newTokenPos*2;
     }
@@ -16,30 +16,32 @@ public class BoardState {
     }
 
     public boolean currentPlayerWon(boolean red) {
-        long pos;
-        if (red) pos = board;
-        else pos = board^(mask&0xFDFBF7EFDFBFL);
-
-        long m = pos & (pos >> 7 );
+        long m = board & (board >> 7 );
         if (( m & (m >> 14) ) > 0) return true;
-        m = pos & (pos >> 1);
+        m = board & (board >> 1);
         if (( m & (m >> 2) ) > 0) return true;
-        m = pos & (pos >> 6);
+        m = board & (board >> 6);
         if (( m & (m >> 12)) > 0) return true;
-        m = pos & (pos >> 8);
+        m = board & (board >> 8);
         return (( m & (m >> 16)) > 0);
-
     }
 
-    public void print() {
+    public void print(boolean red) {
         for (int i = 5; i>=0; i--) {
             for (int j = 0; j<7; j++) {
                 int pos = j*7 + i;
                 boolean boardAtPos = ((board >> pos)&1)==1;
                 boolean maskAtPos = ((mask >> pos)&1)==1;
-                if (boardAtPos) System.out.print("r"); //red
-                else if (maskAtPos) System.out.print("y"); //yellow
-                else System.out.print("_");
+                if (red) {
+                    if (boardAtPos) System.out.print("r"); //red
+                    else if (maskAtPos) System.out.print("y"); //yellow
+                    else System.out.print("_");
+                }
+                else {
+                    if (boardAtPos) System.out.print("y"); //yellow
+                    else if (maskAtPos) System.out.print("r"); //red
+                    else System.out.print("_");
+                }
             }
             System.out.println();
         }
@@ -60,13 +62,19 @@ public class BoardState {
                 mask += val;
                 red = !red;
                 if (i<7) mask += val*2;
+                flip();
             }
             else if (boardString.charAt(i) == 'y') {
                 mask += val;
                 red = !red;
                 if (i<7) mask += val*2;
+                flip();
             }
         }
         return red;
+    }
+
+    public void flip() {
+        board = board^(mask&0xFDFBF7EFDFBFL);
     }
 }

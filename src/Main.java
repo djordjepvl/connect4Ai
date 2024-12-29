@@ -11,6 +11,6 @@ public class Main {
                 "r___ryy"
                 ;
 
-        ConnectFourGame.start(defaultBoard);
+        ConnectFourGame.start();
     }
 }

@@ -8,7 +8,7 @@ public class ConnectFourGame {
         red = currentBoard.set(initialBoard);
         red = !red;
         while (true) {
-            currentBoard.print();
+            currentBoard.print(red);
             if (currentBoard.currentPlayerWon(red)) {
                 if (red) System.out.print("Red won!");
                 else System.out.print("Yellow won!");
@@ -16,12 +16,12 @@ public class ConnectFourGame {
             }
 
             red = !red;
+            currentBoard.flip();
 
             if (red) System.out.print("Red's move:");
             else System.out.print("Yellow's move:");
 
             consolePlay();
-
         }
     }
     public static void start() {
