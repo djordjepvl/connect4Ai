@@ -12,12 +12,20 @@ public class Main {
                 ;
         String board2 =
                 "_______" +
-                "__y____" +
-                "_ryyy__" +
-                "_ryryyr" +
-                "_rrryrr" +
+                "_y_____" +
+                "_rrry__" +
+                "_ryyryr" +
+                "_yryyrr" +
                 "yyrrryy"
                 ;
-        ConnectFourGame.start();
+        String board3 =
+                "_ryyrrr" +
+                "_yrryyy" +
+                "_ryyrrr" +
+                "_yrryyy" +
+                "_ryyrrr" +
+                "ryrryyy"
+                ;
+        ConnectFourGame.start(board3);
     }
 }
