@@ -1,5 +1,3 @@
-import org.xml.sax.helpers.AttributesImpl;
-
 import java.util.Scanner;
 
 public class ConnectFourGame {
@@ -10,6 +8,7 @@ public class ConnectFourGame {
         red = currentBoard.set(initialBoard);
         while (true) {
             currentBoard.print(red);
+            System.out.println(currentBoard.currentPlayerWinPosCount());
 
             if (red) {
                 System.out.print("Red's move:");
@@ -21,7 +20,7 @@ public class ConnectFourGame {
             }
 
 
-            if (currentBoard.currentPlayerWon(red)) {
+            if (currentBoard.currentPlayerWon()) {
                 currentBoard.print(red);
                 if (red) System.out.println("Red wins!");
                 else System.out.println("Yellow wins!");
@@ -63,7 +62,7 @@ public class ConnectFourGame {
             System.out.println("Invalid move!");
             return false;
         }
-        currentBoard.play(column, red);
+        currentBoard.play(column);
         return true;
     }
 }
