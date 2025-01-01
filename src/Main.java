@@ -2,7 +2,7 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        String defaultBoard =
+        String board1 =
                 "____r__" +
                 "____r__" +
                 "____y__" +
@@ -10,7 +10,22 @@ public class Main {
                 "____yr_" +
                 "r___ryy"
                 ;
-
-        ConnectFourGame.start(defaultBoard);
+        String board2 =
+                "_______" +
+                "_y_____" +
+                "_rrry__" +
+                "_ryyryr" +
+                "_yryyrr" +
+                "yyrrryy"
+                ;
+        String board3 =
+                "_ryyrrr" +
+                "_yrryyy" +
+                "_ryyrrr" +
+                "_yrryyy" +
+                "_ryyrrr" +
+                "ryrryyy"
+                ;
+        ConnectFourGame.start(board3);
     }
 }
