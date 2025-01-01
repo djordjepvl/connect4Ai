@@ -18,6 +18,6 @@ public class Main {
                 "_rrryrr" +
                 "yyrrryy"
                 ;
-        ConnectFourGame.start(board2);
+        ConnectFourGame.start();
     }
 }

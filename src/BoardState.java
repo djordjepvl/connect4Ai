@@ -102,7 +102,7 @@ public class BoardState {
         return b;
     }
 
-    public int currentPlayerWinPosCount() {
+    public byte currentPlayerWinPosCount() {
         long m = ~mask;
 
         //horizontal
@@ -134,7 +134,7 @@ public class BoardState {
             System.out.println();
         }*/
 
-        int cnt;
+        byte cnt;
         for (cnt = 0; b>0; cnt++) b &= b-1;
         return cnt;
     }

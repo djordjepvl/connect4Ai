@@ -1,21 +1,21 @@
 public class MinMax {
 
-    public static int calculateBestMove(BoardState b) {
-        int bestMove = 0;
+    public static byte calculateBestMove(BoardState b) {
+        byte bestMove;
 
         BoardState[] moves = new BoardState[7];
-        int[] moveScores = new int[7];
-        int[] moveColumns = new int[7];
-        int cnt = 0;
+        byte[] moveScores = new byte[7];
+        byte[] moveColumns = new byte[7];
+        byte cnt = 0;
 
-        int[] order = new int[7];
+        byte[] order = new byte[7];
 
-        for (int i = 1; i<8; i++) {
+        for (byte i = 1; i<8; i++) {
             if (b.columnFull(i)) continue;
             BoardState newBoard = b.clone();
             newBoard.play(i);
 
-            //if (newBoard.currentPlayerWon()) return i;
+            if (newBoard.boardFull() || newBoard.currentPlayerWon()) return i;
             moveScores[cnt] = newBoard.currentPlayerWinPosCount();
 
             newBoard.flip();
@@ -27,7 +27,7 @@ public class MinMax {
 
         // change order based on heuristic using insertion sort
         for (int i = 1; i<cnt; i++) {
-            int curr = order[i];
+            byte curr = order[i];
 
             int j = i-1;
             while (j>=0) {
@@ -39,24 +39,22 @@ public class MinMax {
             }
             order[j+1] = curr;
         }
+        bestMove = order[0];
 
-        bestMove = moveColumns[order[0]];
+
+        int max = 0;
+        for (byte i = 0; i<cnt; i++) {
+            int moveScore = calculateScore(moves[order[i]]);
+            if (moveScore > max) max = moveScore;
+        }
         return bestMove;
     }
 
-    /*public static int calculateScore(BoardState b) {
-        BoardState[] moves = new BoardState[7];
-        int cnt = 0;
-        for (int i = 1; i<8; i++) {
-            if (b.columnFull(i)) continue;
-            BoardState newBoard = b.clone();
-            newBoard.play(i);
-            newBoard.flip();
-            moves[cnt++] = newBoard;
-        }
+    public static byte calculateScore(BoardState b) {
+
 
 
 
         return 0;
-    }*/
+    }
 }
