@@ -13,19 +13,19 @@ public class Main {
         String board2 =
                 "_______" +
                 "_y_____" +
-                "_rrry__" +
-                "_ryyryr" +
-                "_yryyrr" +
-                "yyrrryy"
+                "_yyry_r" +
+                "_ryyrrr" +
+                "_yryryr" +
+                "ryryryy"
                 ;
         String board3 =
-                "_ryyrrr" +
+                "__yyrrr" +
                 "_yrryyy" +
                 "_ryyrrr" +
                 "_yrryyy" +
                 "_ryyrrr" +
-                "ryrryyy"
+                "_yrryyy"
                 ;
-        ConnectFourGame.start(board3);
+        ConnectFourGame.start(board2);
     }
 }

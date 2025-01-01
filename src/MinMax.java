@@ -45,13 +45,13 @@ public class MinMax {
         int max = -42;
         for (int i = 0; i<cnt; i++) {
             int moveScore = -calculateScore(moves[order[i]]);
-            System.out.println(moveScore);
+            System.out.println(-moveScore);
             if (moveScore > max) {
                 max = moveScore;
-                System.out.println(moveScore);
                 bestMove = moveColumns[order[i]];
             }
         }
+        System.out.println(max);
         return bestMove;
     }
 
@@ -69,11 +69,12 @@ public class MinMax {
             BoardState newBoard = b.clone();
             newBoard.play(i);
 
-            if (newBoard.boardFull()) return 0;
             if (newBoard.currentPlayerWon()) {
-                System.out.println(newBoard.moves);
+                //System.out.println(newBoard.moves);
                 return (44 - newBoard.moves)/2;
             }
+            if (newBoard.boardFull()) return 0;
+
             moveScores[cnt] = newBoard.currentPlayerWinPosCount();
 
             newBoard.flip();
@@ -101,7 +102,7 @@ public class MinMax {
         int max = -42;
         for (int i = 0; i<cnt; i++) {
             int moveScore = -calculateScore(moves[order[i]]);
-            System.out.println(moveScore);
+            //System.out.println(-moveScore);
             if (moveScore > max) max = moveScore;
         }
         return max;
