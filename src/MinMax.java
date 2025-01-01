@@ -22,32 +22,25 @@ public class MinMax {
             moves[cnt] = newBoard;
             moveColumns[cnt] = i;
 
-            order[cnt++] = i;
+            order[cnt] = cnt++;
         }
 
-        /*System.out.println();
-        for (int i = 0; i<cnt; i++) {
-            System.out.print(moveScores[i] + " ");
-        }
-        System.out.println();
-        for (int i = 0; i<cnt; i++) {
-            System.out.print(order[i] + " ");
-        }
-        System.out.println();
-
+        // change order based on heuristic using insertion sort
         for (int i = 1; i<cnt; i++) {
             int curr = order[i];
 
-            for (int j = i-1; j>=0; j--) {
-                if (curr > )
+            int j = i-1;
+            while (j>=0) {
+                if (moveScores[curr] < moveScores[order[j]] ) break;
+                if (moveScores[curr] == moveScores[order[j]] &&
+                        Math.abs(3 - moveColumns[curr]) > Math.abs(4 - moveColumns[order[j]])) break;
+                order[j+1] = order[j];
+                j--;
             }
+            order[j+1] = curr;
         }
 
-        for (int i = 0; i<cnt; i++) {
-            System.out.print(order[i] + " ");
-        } System.out.println();*/
-
-        bestMove = order[0];
+        bestMove = moveColumns[order[0]];
         return bestMove;
     }
 
