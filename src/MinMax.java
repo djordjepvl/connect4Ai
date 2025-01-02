@@ -41,21 +41,23 @@ public class MinMax {
         }
         bestMove = moveColumns[order[0]];
 
+        int alpha = -42;
+        int beta = 42;
 
-        int max = -42;
         for (int i = 0; i<cnt; i++) {
-            int moveScore = -calculateScore(moves[order[i]]);
+            int moveScore = -calculateScore(moves[order[i]],-beta, -alpha);
             System.out.println(-moveScore);
-            if (moveScore > max) {
-                max = moveScore;
+            if (moveScore > alpha) {
+                alpha = moveScore;
                 bestMove = moveColumns[order[i]];
             }
+            if (alpha >= beta) break;
         }
-        System.out.println(max);
+        System.out.println(alpha);
         return bestMove;
     }
 
-    public static int calculateScore(BoardState b) {
+    public static int calculateScore(BoardState b, int alpha, int beta) {
 
         BoardState[] moves = new BoardState[7];
         int[] moveScores = new int[7];
@@ -99,12 +101,13 @@ public class MinMax {
             order[j+1] = curr;
         }
 
-        int max = -42;
+
         for (int i = 0; i<cnt; i++) {
-            int moveScore = -calculateScore(moves[order[i]]);
+            int moveScore = -calculateScore(moves[order[i]], -beta, -alpha);
             //System.out.println(-moveScore);
-            if (moveScore > max) max = moveScore;
+            if (moveScore > alpha) alpha = moveScore;
+            if (alpha >= beta) break;
         }
-        return max;
+        return alpha;
     }
 }

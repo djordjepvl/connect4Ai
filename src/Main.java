@@ -26,6 +26,6 @@ public class Main {
                 "_ryyrrr" +
                 "_yrryyy"
                 ;
-        ConnectFourGame.start(board2);
+        ConnectFourGame.start(board1);
     }
 }
