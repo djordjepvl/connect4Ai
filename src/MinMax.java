@@ -50,8 +50,8 @@ public class MinMax {
             if (moveScore > alpha) {
                 alpha = moveScore;
                 bestMove = moveColumns[order[i]];
+                if (alpha >= beta) break;
             }
-            if (alpha >= beta) break;
         }
         System.out.println(alpha);
         return bestMove;
@@ -86,6 +86,13 @@ public class MinMax {
             order[cnt] = cnt++;
         }
 
+        int maxPossibleScore = (43-b.moves)/2;
+        if (beta > maxPossibleScore) {
+            beta = maxPossibleScore;
+            if (alpha >= beta) return beta;
+        }
+
+
         // change order based on heuristic using insertion sort
         for (int i = 1; i<cnt; i++) {
             int curr = order[i];
@@ -105,8 +112,10 @@ public class MinMax {
         for (int i = 0; i<cnt; i++) {
             int moveScore = -calculateScore(moves[order[i]], -beta, -alpha);
             //System.out.println(-moveScore);
-            if (moveScore > alpha) alpha = moveScore;
-            if (alpha >= beta) break;
+            if (moveScore > alpha) {
+                alpha = moveScore;
+                if (alpha >= beta) return alpha;
+            }
         }
         return alpha;
     }
