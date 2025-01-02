@@ -1,5 +1,5 @@
 public class BoardState {
-    public long board = 0;
+    private long board = 0;
     private long mask = 0;
     int moves = 0;
 
@@ -13,6 +13,43 @@ public class BoardState {
         if (newTokenPos >> shift+5 == 1) mask |= newTokenPos*2;
 
         moves++;
+    }
+
+    public int opponentWinningPos() {
+        flip();
+        long m = ~mask;
+
+        //horizontal
+        long a = board&(board << 7)&(board >> 7);
+        long b = m&((a <<14)|(a >> 14));
+
+        //vertical
+        a = board&(board << 1)&(board >> 1);
+        b |= m&((a <<2)|(a >> 2));
+
+        // diagonal /
+        a = board&(board << 8)&(board >> 8);
+        b |= m&((a <<16)|(a >> 16));
+
+        // diagonal \
+        a = board&(board << 6)&(board >> 6);
+        b |= m&((a <<12)|(a >> 12));
+
+        b &= 0xFDFBF7EFDFBFL;
+
+        long c = b & ((mask&0xFDFBF7EFDFBFL) + 0x40810204081L);
+
+        int winMove = 0;
+
+        if ((c & 0x3FL)>0) winMove = 1;
+        else if ((c & 0xFC0000000000L)>0) winMove = 7;
+        else if ((c & 0x1F80L)>0) winMove = 2;
+        else if ((c & 0x1F800000000L)>0) winMove = 6;
+        else if ((c & 0xFC000L)>0) winMove = 3;
+        else if ((c & 0x3F0000000L)>0) winMove = 5;
+        else if ((c & 0x7E00000L)>0) winMove = 4;
+        flip();
+        return winMove;
     }
 
     public boolean columnFull(int column) {
@@ -124,19 +161,33 @@ public class BoardState {
 
         b &= 0xFDFBF7EFDFBFL;
 
-        /*System.out.println();
-        for (int i = 6; i>=0; i--) {
-            for (int j = 0; j<7; j++) {
-                int pos = j*7 + i;
-                boolean maskAtPos = ((b >> pos)&1)==1;
-                System.out.print(maskAtPos? 1:0);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }*/
-
         int cnt;
         for (cnt = 0; b>0; cnt++) b &= b-1;
         return cnt;
+    }
+
+    public void printBits() {
+        printBits(board);
+    }
+    private void printBits(long a) {
+        System.out.println();
+        for (int i = 6; i>=0; i--) {
+            for (int j = 0; j<7; j++) {
+                int pos = j*7 + i;
+                boolean b = ((a >> pos)&1)==1;
+                System.out.print(b? 1:0);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
+
+    public long getKey() {
+        long reverseBoard = ((board & 0x3FL) << 42) | ((board & 0x1F80L) << 28) | ((board & 0xFC000L) << 14) | (board & 0x7E00000L)
+                | ((board & 0x3F0000000L) >> 14) | ((board & 0x1F800000000L) >> 28) | ((board & 0xFC0000000000L) >> 42);
+
+        if (reverseBoard > board) return reverseBoard;
+        return board;
     }
 }

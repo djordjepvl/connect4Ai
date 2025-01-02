@@ -35,8 +35,8 @@ public class Main {
                 "_______" +
                 "_______" +
                 "_______" +
-                "_______" +
-                "__ryryr"
+                "___y___" +
+                "___r___"
                 ;
         ConnectFourGame.start(board4);
     }

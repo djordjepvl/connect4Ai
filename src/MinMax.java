@@ -2,21 +2,18 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 
 public class MinMax {
 
-    static Long2IntOpenHashMap table = new Long2IntOpenHashMap(8500000);
+    static Long2IntOpenHashMap table = new Long2IntOpenHashMap(80000000);
     static {
         table.defaultReturnValue(42);
     }
 
     public static int calculateBestMove(BoardState b) {
-        int bestMove;
-
+        // create and sort list of possible moves
         BoardState[] moves = new BoardState[7];
         int[] moveScores = new int[7];
         int[] moveColumns = new int[7];
         int cnt = 0;
-
         int[] order = new int[7];
-
         for (int i = 1; i<8; i++) {
             if (b.columnFull(i)) continue;
             BoardState newBoard = b.clone();
@@ -30,6 +27,11 @@ public class MinMax {
             moveColumns[cnt] = i;
 
             order[cnt] = cnt++;
+        }
+        //check if opponent has winning moves
+        int opp = b.opponentWinningPos();
+        if (opp != 0) {
+            return opp;
         }
 
         // change order based on heuristic using insertion sort
@@ -46,7 +48,7 @@ public class MinMax {
             }
             order[j+1] = curr;
         }
-        bestMove = moveColumns[order[0]];
+        int bestMove = moveColumns[order[0]];
 
         int alpha = -42;
         int beta = 42;
@@ -66,23 +68,34 @@ public class MinMax {
 
     public static int calculateScore(BoardState b, int alpha, int beta) {
 
+        //check if move is already in the table and if alpha>beta
+        int maxPossibleScore = (43-b.moves)/2;
+        int transPositionTableScore = table.get(b.getKey());
+        if (transPositionTableScore != 42) {
+            maxPossibleScore = transPositionTableScore;
+        }
+        if (beta > maxPossibleScore) {
+            beta = maxPossibleScore;
+            if (alpha >= beta) return beta;
+        }
+
+        //create and sort list of possible moves
         BoardState[] moves = new BoardState[7];
         int[] moveScores = new int[7];
         int[] moveColumns = new int[7];
         int cnt = 0;
-
         int[] order = new int[7];
-
-        for (int i = 1; i<8; i++) {
+        for (int i = 1; i < 8; i++) {
             if (b.columnFull(i)) continue;
             BoardState newBoard = b.clone();
             newBoard.play(i);
 
             if (newBoard.currentPlayerWon()) {
                 //System.out.println(newBoard.moves);
-                return (44 - newBoard.moves)/2;
+                return (44 - newBoard.moves) / 2;
             }
             if (newBoard.boardFull()) return 0;
+
 
             moveScores[cnt] = newBoard.currentPlayerWinPosCount();
 
@@ -93,14 +106,15 @@ public class MinMax {
             order[cnt] = cnt++;
         }
 
-        int maxPossibleScore = (43-b.moves)/2;
-        Integer transPositionTableScore = table.get(b.board);
-        if (transPositionTableScore != 42) maxPossibleScore = transPositionTableScore;
-        if (beta > maxPossibleScore) {
-            beta = maxPossibleScore;
-            if (alpha >= beta) return beta;
+        // check if opponent has winning moves
+        int opp = b.opponentWinningPos();
+        if (opp != 0) {
+            b.play(opp);
+            b.flip();
+            int moveScore = -calculateScore(b, -beta, -alpha);
+            if (moveScore > alpha) return moveScore;
+            return alpha;
         }
-
 
         // change order based on heuristic using insertion sort
         for (int i = 1; i<cnt; i++) {
@@ -117,7 +131,7 @@ public class MinMax {
             order[j+1] = curr;
         }
 
-
+        //get best score
         for (int i = 0; i<cnt; i++) {
             int moveScore = -calculateScore(moves[order[i]], -beta, -alpha);
             //System.out.println(-moveScore);
@@ -126,7 +140,7 @@ public class MinMax {
                 if (alpha >= beta) return alpha;
             }
         }
-        table.put(b.board, alpha);
+        table.put(b.getKey(), alpha);
         return alpha;
     }
 }

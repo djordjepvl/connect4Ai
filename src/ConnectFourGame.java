@@ -8,7 +8,6 @@ public class ConnectFourGame {
         red = currentBoard.set(initialBoard);
         while (true) {
             currentBoard.print(red);
-            System.out.println(currentBoard.currentPlayerWinPosCount());
 
             if (red) {
                 System.out.print("Red's move:");

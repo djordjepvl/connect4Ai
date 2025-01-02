@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="fastutil" type="repository">
+    <properties maven-id="fastutil:fastutil:5.0.5" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/fastutil/fastutil/5.0.5/fastutil-5.0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
