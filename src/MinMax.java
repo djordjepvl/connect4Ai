@@ -8,6 +8,7 @@ public class MinMax {
     }
 
     public static int calculateBestMove(BoardState b) {
+        table.clear();
         // create and sort list of possible moves
         BoardState[] moves = new BoardState[7];
         int[] moveScores = new int[7];
@@ -70,9 +71,9 @@ public class MinMax {
 
         //check if move is already in the table and if alpha>beta
         int maxPossibleScore = (43-b.moves)/2;
-        int transPositionTableScore = table.get(b.getKey());
-        if (transPositionTableScore != 42) {
-            maxPossibleScore = transPositionTableScore;
+        int tableScore = table.get(b.getKey());
+        if (tableScore != 42) {
+            maxPossibleScore = tableScore;
         }
         if (beta > maxPossibleScore) {
             beta = maxPossibleScore;
@@ -96,7 +97,6 @@ public class MinMax {
             }
             if (newBoard.boardFull()) return 0;
 
-
             moveScores[cnt] = newBoard.currentPlayerWinPosCount();
 
             newBoard.flip();
@@ -107,14 +107,17 @@ public class MinMax {
         }
 
         // check if opponent has winning moves
-        int opp = b.opponentWinningPos();
+        /*int opp = b.opponentWinningPos();
         if (opp != 0) {
+            if (opp>7) {
+                return -((42 - b.moves) / 2);
+            }
             b.play(opp);
             b.flip();
             int moveScore = -calculateScore(b, -beta, -alpha);
             if (moveScore > alpha) return moveScore;
             return alpha;
-        }
+        }*/
 
         // change order based on heuristic using insertion sort
         for (int i = 1; i<cnt; i++) {

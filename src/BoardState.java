@@ -17,6 +17,75 @@ public class BoardState {
 
     public int opponentWinningPos() {
         flip();
+        long a = (mask&0xFDFBF7EFDFBFL) + 0x40810204081L;
+
+        int winMove = 0;
+
+        if (currentPlayerWon(a & 0x3FL)) winMove += 1;
+        if (currentPlayerWon(a & 0xFC0000000000L)) {
+            winMove += 7;
+            if (winMove > 7) return winMove;
+        }
+        if (currentPlayerWon(a & 0x1F80L)) {
+            winMove += 2;
+            if (winMove > 7) return winMove;
+        }
+        if (currentPlayerWon(a & 0x1F800000000L)) {
+            winMove += 6;
+            if (winMove > 7) return winMove;
+        }
+        if (currentPlayerWon(a & 0xFC000L)) {
+            winMove += 3;
+            if (winMove > 7) return winMove;
+        }
+        if (currentPlayerWon(a & 0x3F0000000L)) {
+            winMove += 5;
+            if (winMove > 7) return winMove;
+        }
+        if (currentPlayerWon(a & 0x7E00000L)) {
+            winMove += 4;
+            if (winMove > 7) return winMove;
+        }
+        flip();
+        return winMove;
+    }
+    public boolean currentPlayerWon() {
+        //horizontal
+        long a = board & (board >> 7 );
+        if (( a & (a >> 14) ) > 0) return true;
+
+        // vertical
+        a = board & (board >> 1);
+        if (( a & (a >> 2) ) > 0) return true;
+
+        // diagonal \
+        a = board & (board >> 6);
+        if (( a & (a >> 12)) > 0) return true;
+
+        // diagonal /
+        a = board & (board >> 8);
+        return (( a & (a >> 16)) > 0);
+    }
+    public boolean currentPlayerWon(long additionalMoves) {
+        long board = this.board | additionalMoves;
+        //horizontal
+        long a = board & (board >> 7 );
+        if (( a & (a >> 14) ) > 0) return true;
+
+        // vertical
+        a = board & (board >> 1);
+        if (( a & (a >> 2) ) > 0) return true;
+
+        // diagonal \
+        a = board & (board >> 6);
+        if (( a & (a >> 12)) > 0) return true;
+
+        // diagonal /
+        a = board & (board >> 8);
+        return (( a & (a >> 16)) > 0);
+    }
+    // not 100% accurate, used for heuristic
+    public int currentPlayerWinPosCount() {
         long m = ~mask;
 
         //horizontal
@@ -37,44 +106,16 @@ public class BoardState {
 
         b &= 0xFDFBF7EFDFBFL;
 
-        long c = b & ((mask&0xFDFBF7EFDFBFL) + 0x40810204081L);
-
-        int winMove = 0;
-
-        if ((c & 0x3FL)>0) winMove = 1;
-        else if ((c & 0xFC0000000000L)>0) winMove = 7;
-        else if ((c & 0x1F80L)>0) winMove = 2;
-        else if ((c & 0x1F800000000L)>0) winMove = 6;
-        else if ((c & 0xFC000L)>0) winMove = 3;
-        else if ((c & 0x3F0000000L)>0) winMove = 5;
-        else if ((c & 0x7E00000L)>0) winMove = 4;
-        flip();
-        return winMove;
+        int cnt;
+        for (cnt = 0; b>0; cnt++) b &= b-1;
+        return cnt;
     }
 
     public boolean columnFull(int column) {
         return ((mask >> (column-1)*7 )&0b1000000)==0b1000000;
     }
     public boolean boardFull() {
-        return mask >= 0x1FFFFFFFFFFFFL;
-    }
-
-    public boolean currentPlayerWon() {
-        //horizontal
-        long a = board & (board >> 7 );
-        if (( a & (a >> 14) ) > 0) return true;
-
-        // vertical
-        a = board & (board >> 1);
-        if (( a & (a >> 2) ) > 0) return true;
-
-        // diagonal \
-        a = board & (board >> 6);
-        if (( a & (a >> 12)) > 0) return true;
-
-        // diagonal /
-        a = board & (board >> 8);
-        return (( a & (a >> 16)) > 0);
+        return moves > 41;
     }
 
     public void print(boolean red) {
@@ -98,7 +139,6 @@ public class BoardState {
             System.out.println();
         }
     }
-
     public boolean set(String boardString) {
         boolean red = true;
         board = 0;
@@ -140,32 +180,6 @@ public class BoardState {
         return b;
     }
 
-    public int currentPlayerWinPosCount() {
-        long m = ~mask;
-
-        //horizontal
-        long a = board&(board << 7)&(board >> 7);
-        long b = m&((a <<14)|(a >> 14));
-
-        //vertical
-        a = board&(board << 1)&(board >> 1);
-        b |= m&((a <<2)|(a >> 2));
-
-        // diagonal /
-        a = board&(board << 8)&(board >> 8);
-        b |= m&((a <<16)|(a >> 16));
-
-        // diagonal \
-        a = board&(board << 6)&(board >> 6);
-        b |= m&((a <<12)|(a >> 12));
-
-        b &= 0xFDFBF7EFDFBFL;
-
-        int cnt;
-        for (cnt = 0; b>0; cnt++) b &= b-1;
-        return cnt;
-    }
-
     public void printBits() {
         printBits(board);
     }
@@ -182,12 +196,11 @@ public class BoardState {
         }
     }
 
-
     public long getKey() {
-        long reverseBoard = ((board & 0x3FL) << 42) | ((board & 0x1F80L) << 28) | ((board & 0xFC000L) << 14) | (board & 0x7E00000L)
+        /*long reverseBoard = ((board & 0x3FL) << 42) | ((board & 0x1F80L) << 28) | ((board & 0xFC000L) << 14) | (board & 0x7E00000L)
                 | ((board & 0x3F0000000L) >> 14) | ((board & 0x1F800000000L) >> 28) | ((board & 0xFC0000000000L) >> 42);
 
-        if (reverseBoard > board) return reverseBoard;
+        if (reverseBoard > board) return reverseBoard;*/
         return board;
     }
 }
