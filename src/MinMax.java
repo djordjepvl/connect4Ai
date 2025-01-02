@@ -1,4 +1,11 @@
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+
 public class MinMax {
+
+    static Long2IntOpenHashMap table = new Long2IntOpenHashMap(8500000);
+    static {
+        table.defaultReturnValue(42);
+    }
 
     public static int calculateBestMove(BoardState b) {
         int bestMove;
@@ -87,6 +94,8 @@ public class MinMax {
         }
 
         int maxPossibleScore = (43-b.moves)/2;
+        Integer transPositionTableScore = table.get(b.board);
+        if (transPositionTableScore != 42) maxPossibleScore = transPositionTableScore;
         if (beta > maxPossibleScore) {
             beta = maxPossibleScore;
             if (alpha >= beta) return beta;
@@ -117,6 +126,7 @@ public class MinMax {
                 if (alpha >= beta) return alpha;
             }
         }
+        table.put(b.board, alpha);
         return alpha;
     }
 }

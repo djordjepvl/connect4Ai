@@ -1,7 +1,8 @@
 public class BoardState {
-    private long board = 0;
+    public long board = 0;
     private long mask = 0;
     int moves = 0;
+
 
     public void play(int column) {
         int shift = (column-1)*7;
