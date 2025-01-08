@@ -119,6 +119,10 @@ public class BoardState {
     }
 
     public void print(boolean red) {
+        String r = ConnectFourGame.r;
+        String y = ConnectFourGame.y;
+        String e = ConnectFourGame.e;
+
         System.out.println();
         for (int i = 5; i>=0; i--) {
             for (int j = 0; j<7; j++) {
@@ -126,14 +130,14 @@ public class BoardState {
                 boolean boardAtPos = ((board >> pos)&1)==1;
                 boolean maskAtPos = ((mask >> pos)&1)==1;
                 if (red) {
-                    if (boardAtPos) System.out.print("r");
-                    else if (maskAtPos) System.out.print("y");
-                    else System.out.print("_");
+                    if (boardAtPos) System.out.print(r);
+                    else if (maskAtPos) System.out.print(y);
+                    else System.out.print(e);
                 }
                 else {
-                    if (boardAtPos) System.out.print("y");
-                    else if (maskAtPos) System.out.print("r");
-                    else System.out.print("_");
+                    if (boardAtPos) System.out.print(y);
+                    else if (maskAtPos) System.out.print(r);
+                    else System.out.print(e);
                 }
             }
             System.out.println();
@@ -197,10 +201,18 @@ public class BoardState {
     }
 
     public long getKey() {
-        /*long reverseBoard = ((board & 0x3FL) << 42) | ((board & 0x1F80L) << 28) | ((board & 0xFC000L) << 14) | (board & 0x7E00000L)
+        long reverseBoard = ((board & 0x3FL) << 42) | ((board & 0x1F80L) << 28) | ((board & 0xFC000L) << 14) | (board & 0x7E00000L)
                 | ((board & 0x3F0000000L) >> 14) | ((board & 0x1F800000000L) >> 28) | ((board & 0xFC0000000000L) >> 42);
 
-        if (reverseBoard > board) return reverseBoard;*/
+        if (reverseBoard > board) return reverseBoard;
         return board;
+    }
+
+    public long getBoard() {
+        return board;
+    }
+
+    public long getMask() {
+        return mask;
     }
 }

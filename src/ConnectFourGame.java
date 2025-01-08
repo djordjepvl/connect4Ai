@@ -2,9 +2,14 @@ import java.util.Scanner;
 
 public class ConnectFourGame {
     static boolean red;
-    private static BoardState currentBoard = new BoardState();
+    private static BoardState currentBoard;
+
+    public static String y = "\033[33mO\033[0m";
+    public static String r = "\033[31mO\033[0m";
+    public static String e = "\033[90m□\033[0m";
 
     public static void start(String initialBoard) {
+        currentBoard = new BoardState();
         red = currentBoard.set(initialBoard);
         while (true) {
             currentBoard.print(red);
@@ -34,6 +39,10 @@ public class ConnectFourGame {
             red = !red;
             currentBoard.flip();
         }
+        System.out.println("Play again?");
+        System.out.print("y/n: ");
+        String nl = (new Scanner(System.in)).nextLine();
+        if (nl.equals("y")) start();
     }
     public static void start() {
         start("");

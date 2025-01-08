@@ -6,6 +6,7 @@ import java.util.HashMap;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
+
         String board1 =
                 "____r__" +
                 "____r__" +
@@ -38,6 +39,6 @@ public class Main {
                 "___y___" +
                 "___r___"
                 ;
-        ConnectFourGame.start(board4);
+        ConnectFourGame.start();
     }
 }
